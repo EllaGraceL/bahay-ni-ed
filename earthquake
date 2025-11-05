@@ -7,7 +7,7 @@ const float screenWidth = 800.0f;
 const float screenHeight = 600.0f;
 
 float camX = -80.0f, camY = 180.0f; //changes
-float camZoom = 1.0f;
+float camZoom = 2.0f;
 
 void drawDoor() {
     glBegin(GL_QUADS);
@@ -263,29 +263,58 @@ void drawHill(float baseY, float amplitude, float frequency, float r, float g, f
     glEnd();
 }
 
-//animation zoom out
+//animation variables
 bool zoomOut = false;
 bool zoomIn = false;
 
+bool panLeft = false;
+bool panRight = false;
+
+bool waitFlag = false;
+float waitTime = 0.0f;
+
 void updateZoom(int value) {
     if (zoomOut) {
-        camZoom -= 0.1f;           // zooming out
-        if (camZoom <= -0.50) {    
+        camZoom -= 0.007f;           // zooming out
+        if (camZoom <= 1.0f) {
             zoomOut = false;
-            zoomIn = true;        
+            zoomIn = true;
+
+            panLeft = true;
         }
     }
-    else if (zoomIn) {
-        camZoom += 0.1f;          // zooming  
-        if (camZoom >= 3.00f) {    
-            zoomIn = false;       
+    else if (panLeft) {
+        camX -= 1.5f;
+        if (camX <= -320.0f) {
+            panLeft = false;
+			waitFlag = true;
+		}
+    }
+    else if (waitFlag) {
+		waitTime += 16.0f;
+        if (waitTime >= 1500.0f) {
+            waitFlag = false;
+            waitTime = 0.0f;
+            panRight = true;
+		}
+    }
+    else if (panRight && zoomIn) {
+        camX += 3.0f;
+        camZoom += 0.03f;
+        if (camX >= -80.0f) {
+            panRight = false;
+		}
+
+        if (camZoom >= 4.00f) {
+            zoomIn = false;
         }
     }
-    glutPostRedisplay();    
+
+    glutPostRedisplay();
     printf("camZoom = %.2f\n", camZoom); //monitor
-   // Keep updating if animation is active
+    // Keep updating if animation is active
     if (zoomOut || zoomIn)
-        glutTimerFunc(16, updateZoom, 0); 
+        glutTimerFunc(16, updateZoom, 0);
 }
 
 void animation(unsigned char key, int x, int y) {
@@ -300,8 +329,8 @@ void keyboard(unsigned char key, int x, int y) {
     case '+':
     case '=': camZoom += 0.5f; break;
     case '-':
-    case '_': animation(key, x, y); 
-    break;
+    case '_': animation(key, x, y);
+        break;
     case 27: exit(0); break;
     }
     glutPostRedisplay();
@@ -340,11 +369,11 @@ void display() {
     drawHill(250.0f, 30.0f, 0.01f, 0.4f, 0.7f, 0.4f);
     drawHill(100.0f, 80.0f, 0.005f, 0.2f, 0.6f, 0.2f);
 
-	// Variables for house position
+    // Variables for house position
     float houseX = 250.0f;
     float hillY = hillHeightAt(houseX, 250.0f, 30.0f, 0.01f) - 100.0f;
-    
-	// Draw house
+
+    // Draw house
     glPushMatrix();
     glTranslatef(houseX, hillY + 200.0f, 0.0f);
     drawHouse();
