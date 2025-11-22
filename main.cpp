@@ -19,21 +19,16 @@ int main(int argc, char** argv) {
     glutInitWindowSize((int)screenWidth, (int)screenHeight);
     glutCreateWindow("House on The Hill");
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-    glShadeModel(GL_SMOOTH);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
 
-    glutDisplayFunc(displaySecond);
-    glutKeyboardFunc(keyboardSecond);
-    glutSpecialFunc(specialKeyboardSecond);
-	glutReshapeFunc(reshape);
-	glutTimerFunc(0, earthquake, 0);
+    initFirst();
 
-	glEnable(GL_DEPTH_TEST);
-
-    printf("Hit 'SpaceBar' to Play Animation");
+    glutDisplayFunc(displayFirst);
+    glutKeyboardFunc(keyboardFirst);
+    glutSpecialFunc(specialKeys);
+    printf("Use WASD to move, Arrow Keys to look around, +/- to zoom.\n");
 
 	glutMainLoop();
 

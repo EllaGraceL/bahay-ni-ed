@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <cmath>
+#include "FirstScene.h"
 #include "SecondScene.h"
 using namespace std;
 
@@ -10,7 +11,7 @@ float cameraX_pos = 0.0f, cameraY_pos = 5.0f, cameraZ_pos = 20.0f;
 float cameraX_look = 0.0f, cameraY_look = 0.0f, cameraZ_look = 0.0f;
 float angle = 0.0f;
 
-float quakeAmplitude = 7.5f;
+float quakeAmplitude;
 
 void renderSceneSecond(void) {
     const float size = 50.0f;
@@ -40,6 +41,7 @@ void renderSceneSecond(void) {
 }
 
 void displaySecond() {
+    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
@@ -58,6 +60,19 @@ void displaySecond() {
 void keyboardSecond(unsigned char key, int x, int y) {
     const float speed = 1.0f;
     switch (key) {
+    case '1': // for scene switching
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+
+        initFirst();
+
+        glutDisplayFunc(displayFirst);
+        glutKeyboardFunc(keyboardFirst);
+        glutSpecialFunc(specialKeys);
+        printf("Switched to First Scene. Use WASD to move, Arrow Keys to look around, +/- to zoom.\n");
+		break;
+
     case 'w': cameraZ_pos -= speed; cameraZ_look -= speed; break;
     case 's': cameraZ_pos += speed; cameraZ_look += speed; break;
     case 'a': cameraX_pos -= speed; cameraX_look -= speed; break;
@@ -65,6 +80,7 @@ void keyboardSecond(unsigned char key, int x, int y) {
     // for earthquake purposes (change to animation and make smoother)
     case 'o': cameraY_look += 0.5f; break;
 	case 'p': cameraY_look -= 0.5f; break;
+    case 32: quakeAmplitude = 7.5f; glutTimerFunc(0, earthquake, 0); break;
     case 27: exit(0);
     }
     glutPostRedisplay();

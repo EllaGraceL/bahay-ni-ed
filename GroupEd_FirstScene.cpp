@@ -2,13 +2,21 @@
 #include <cmath>
 #include <stdio.h>
 #include "FirstScene.h"
+#include "SecondScene.h"
 
 const int hillPoints = 400;
 const float screenWidth = 800.0f;
 const float screenHeight = 600.0f;
 
-float camX = -80.0f, camY = 180.0f; //changes
+// camera variables
+float camX = -80.0f, camY = 180.0f;
 float camZoom = 2.5f;
+
+// fade variables
+float fade = 0.0f;
+bool fading = false;
+bool switchingScene = false;
+float fadeSpeed = 0.02f;
 
 void drawDoor() {
     glBegin(GL_QUADS);
@@ -264,7 +272,7 @@ void drawHill(float baseY, float amplitude, float frequency, float r, float g, f
     glEnd();
 }
 
-//animation variables
+// animation variables
 bool zoomOut = false;
 bool zoomIn = false;
 
@@ -276,47 +284,57 @@ float waitTime = 0.0f;
 
 void updateZoom(int value) {
     if (zoomOut) {
-        camZoom -= 0.007f;           // zooming out
+        camZoom -= 0.007f;
         if (camZoom <= 1.0f) {
             zoomOut = false;
-            zoomIn = true;
-
             panLeft = true;
         }
     }
-    else if (panLeft) {
+
+    if (panLeft) {
         camX -= 1.5f;
         if (camX <= -320.0f) {
             panLeft = false;
             waitFlag = true;
         }
     }
-    else if (waitFlag) {
+
+    if (waitFlag) {
         waitTime += 16.0f;
         if (waitTime >= 1500.0f) {
             waitFlag = false;
             waitTime = 0.0f;
             panRight = true;
+            zoomIn = true;
         }
     }
-    else if (panRight && zoomIn) {
-        camX += 3.0f;
-        camZoom += 0.03f;
-        if (camX >= -80.0f) {
-            panRight = false;
+
+    if(zoomIn) {
+        camZoom += 0.05f;  // zoom as long as zoomIn is true
+        camX += 3.0f;      // pan at the same time if needed
+
+        if (camZoom >= 4.5f) {
+            zoomIn = false;
+            if (!fading) {
+                fading = true;
+                switchingScene = true;
+                fade = 0.0f;
+                fadeSpeed = fabs(fadeSpeed);
+                glutTimerFunc(0, updateFade, 0);
+            }
         }
 
-        if (camZoom >= 6.00f) {
-            zoomIn = false;
+        if (camX >= -100.0f) {
+            panRight = false; // stop panning, but keep zooming
         }
     }
 
     glutPostRedisplay();
-    //printf("camZoom = %.2f\n", camZoom); //monitor
-    // Keep updating if animation is active
-    if (zoomOut || zoomIn)
+
+    if (zoomOut || zoomIn || panLeft || panRight || waitFlag)
         glutTimerFunc(16, updateZoom, 0);
 }
+
 
 void animation(unsigned char key, int x, int y) {
     if (!zoomOut && !zoomIn) { // only start if not already animating
@@ -325,8 +343,81 @@ void animation(unsigned char key, int x, int y) {
     }
 }
 
+void drawFade() {
+    if (fade <= 0.0f) return;
+
+    glClearColor(0.58f, 0.157f, 0.122f, 1.0f);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, screenWidth, 0, screenHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_DEPTH_TEST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glColor4f(0, 0, 0, fade);
+    glBegin(GL_QUADS);
+    glVertex2f(0, 0);
+    glVertex2f(screenWidth, 0);
+    glVertex2f(screenWidth, screenHeight);
+    glVertex2f(0, screenHeight);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void updateFade(int value) {
+    if (!fading) return;
+
+    fade += fadeSpeed;
+
+    if (fade >= 1.0f && switchingScene) {
+        switchingScene = false;
+
+        glutDisplayFunc(displaySecond);
+        glutKeyboardFunc(keyboardSecond);
+        glutSpecialFunc(specialKeyboardSecond);
+        glutReshapeFunc(reshape);
+        reshape(800, 600);
+
+        fadeSpeed = -fadeSpeed;
+    }
+
+    if (fade <= 0.0f) {
+        fade = 0.0f;
+        fading = false;
+        fadeSpeed = fabs(fadeSpeed);
+        return;
+    }
+
+    glutPostRedisplay();
+    glutTimerFunc(16, updateFade, 0);
+}
+
+
 void keyboardFirst(unsigned char key, int x, int y) {
     switch (key) {
+    case '2':
+        glutDisplayFunc(displaySecond);
+        glutKeyboardFunc(keyboardSecond);
+        glutSpecialFunc(specialKeyboardSecond);
+        glutReshapeFunc(reshape);
+        reshape(800, 600);
+
+        break;
     case '+':
     case '=': camZoom += 0.5f; break;
     case 32:
@@ -348,8 +439,6 @@ void specialKeys(int key, int x, int y) {
     case GLUT_KEY_RIGHT: camX += moveSpeed; break;
     }
 
-    //printf("camX = %.2f\n", camX); //monitor
-    //printf("camY = %.2f\n", camY); //monitor
     glutPostRedisplay();
 }
 
@@ -379,10 +468,13 @@ void displayFirst() {
     drawHouse();
     glPopMatrix();
 
+    drawFade();
     glutSwapBuffers();
 }
 
 void initFirst() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0.0, screenWidth, 0.0, screenHeight);

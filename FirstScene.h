@@ -8,6 +8,8 @@ void drawHill(float baseY, float amplitude, float frequency, float r, float g, f
 
 void updateZoom(int value);
 void animation(unsigned char key, int x, int y);
+void drawFade();
+void updateFade(int value);
 
 void keyboardFirst(unsigned char key, int x, int y);
 void specialKeys(int key, int x, int y);
