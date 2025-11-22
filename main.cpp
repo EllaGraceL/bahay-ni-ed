@@ -1,340 +1,36 @@
+#include <GL/glew.h>
 #include <GL/glut.h>
 #include <cmath>
+#include <stdio.h>
+#include "FirstScene.h"
+#include "SecondScene.h"
+using namespace std;
 
+// first scene variables
 const int hillPoints = 400;
 const float screenWidth = 800.0f;
 const float screenHeight = 600.0f;
 
-float camX = 0.0f, camY = 0.0f;
-float camZoom = 1.0f;
-
-void drawDoor() {
-    glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(0, 130);
-    glVertex2f(70, 130);
-    glVertex2f(70, 0);
-    glEnd();
-    glColor3f(0.459, 0.459, 0.459);
-    glColor3f(0.89f, 0.694f, 0.024f);
-    glBegin(GL_QUADS);
-    glVertex2f(60, 60);
-    glVertex2f(60, 70);
-    glVertex2f(65, 70);
-    glVertex2f(65, 60);
-    glEnd();
-}
-
-void drawBalcony() {
-    glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(0, 20);
-    glVertex2f(100, 20);
-    glVertex2f(100, 0);
-    glEnd();
-
-    glColor3f(0.459, 0.459, 0.459);
-    glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(0, 20);
-    glVertex2f(100 - 80, 20);
-    glVertex2f(100 - 80, 0);
-    glEnd();
-
-    glColor3f(0, 0, 0);
-    for (int i = 0; i <= 4; i++) {
-        glBegin(GL_LINES);
-        glVertex2f(i * 20 + 10, 20);
-        glVertex2f(i * 20 + 10, 50);
-        glEnd();
-    }
-
-    // Balcony railing horizontal bar
-    glBegin(GL_LINES);
-    glVertex2f(0, 50);
-    glVertex2f(100, 50);
-    glEnd();
-}
-
-void drawWindow() {
-    glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(0, 100);
-    glVertex2f(70, 100);
-    glVertex2f(70, 0);
-    glEnd();
-
-    glColor3f(0.616, 0.651, 0.671);
-    glBegin(GL_QUADS);
-    glVertex2f(-10, -20);
-    glVertex2f(-10, 0);
-    glVertex2f(80, 0);
-    glVertex2f(80, -20);
-    glEnd();
-
-    //shadow
-    glColor3f(0.459, 0.459, 0.459);
-    glBegin(GL_QUADS);
-    glVertex2f(-10, -20);
-    glVertex2f(-10, 0);
-    glVertex2f(5, 0);
-    glVertex2f(5, -20);
-    glEnd();
-
-    //glass panes
-    glColor3f(0, 0, 0);
-    glBegin(GL_QUADS);
-    glVertex2f(5, 5);
-    glVertex2f(30, 5);
-    glVertex2f(30, 45);
-    glVertex2f(5, 45);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(5, 55);
-    glVertex2f(30, 55);
-    glVertex2f(30, 95);
-    glVertex2f(5, 95);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(40, 5);
-    glVertex2f(65, 5);
-    glVertex2f(65, 45);
-    glVertex2f(40, 45);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(40, 55);
-    glVertex2f(65, 55);
-    glVertex2f(65, 95);
-    glVertex2f(40, 95);
-    glEnd();
-}
-
-void drawHouse() {
-    glColor3f(0.922, 0.91, 0.824);
-    glBegin(GL_QUADS);
-    glVertex2f(-500, -200);
-    glVertex2f(-500, 120);
-    glVertex2f(200, 120);
-    glVertex2f(200, -200);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(-100, 100);
-    glVertex2f(-100, 200);
-    glVertex2f(200, 200);
-    glVertex2f(200, 100);
-    glEnd();
-
-    //shadow
-    glColor3f(0.78, 0.773, 0.718);
-    glBegin(GL_QUADS);
-    glVertex2f(-100 - 10, 120);
-    glVertex2f(-100 - 10, 200);
-    glVertex2f(-80, 200);
-    glVertex2f(-80, 120);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(-500 - 10, -200);
-    glVertex2f(-500 - 10, 120);
-    glVertex2f(-480, 120);
-    glVertex2f(-480, -200);
-    glEnd();
-
-
-    // Roof
-    glColor3f(0.31, 0.365, 0.412);
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-130, 200);
-    glVertex2f(50, 300);
-    glVertex2f(230, 200);
-    glEnd();
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-530, 120);
-    glVertex2f(-290, 200);
-    glVertex2f(-50, 120);
-    glEnd();
-
-    //shadow
-    glColor3f(0.231, 0.286, 0.329);
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-130, 200);
-    glVertex2f(50, 300);
-    glVertex2f(-130 + 50, 200);
-    glEnd();
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-530, 120);
-    glVertex2f(-290, 200);
-    glVertex2f(-530 + 70, 120);
-    glEnd();
-
-    // Door
-    glColor3f(0.58, 0.157, 0.122);
-    glPushMatrix();
-    glTranslatef(21, -180, 0);
-    drawDoor();
-    glPopMatrix();
-
-    glColor3f(0.58, 0.157, 0.122);
-    glPushMatrix();
-    glTranslatef(21, 30, 0);
-    drawDoor();
-    glPopMatrix();
-
-    // Window
-    int a = -420;
-    for (int i = 0; i < 3; i++) {
-        glPushMatrix();
-        glColor3f(0.58, 0.157, 0.122);
-        glTranslatef(a, -150, 0);
-        drawWindow();
-        glPopMatrix();
-        a += 120;
-    }
-
-    int b = -420;
-    for (int i = 0; i < 3; i++) {
-        glPushMatrix();
-        glColor3f(0.58, 0.157, 0.122);
-        glTranslatef(b, -10, 0);
-        drawWindow();
-        glPopMatrix();
-        b += 120;
-    }
-
-    //balcony
-    glColor3f(0.616, 0.651, 0.671);
-    glPushMatrix();
-    glTranslatef(6, 30, 0);
-    drawBalcony();
-    glPopMatrix();
-
-    //steps
-    glColor3f(0.616, 0.651, 0.671);
-    glBegin(GL_QUADS);
-    glVertex2f(21, -190); glVertex2f(101, -190);
-    glVertex2f(101, -180); glVertex2f(21, -180);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(21, -200); glVertex2f(111, -200);
-    glVertex2f(111, -190); glVertex2f(21, -190);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(21, -210); glVertex2f(121, -210);
-    glVertex2f(121, -200); glVertex2f(21, -200);
-    glEnd();
-
-    int shadow = 70;
-    //steps shadow
-    glColor3f(0.459, 0.459, 0.459);
-    glBegin(GL_QUADS);
-    glVertex2f(21, -190); glVertex2f(101 - shadow, -190);
-    glVertex2f(101 - shadow, -180); glVertex2f(21, -180);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(21, -200); glVertex2f(111 - shadow, -200);
-    glVertex2f(111 - shadow, -190); glVertex2f(21, -190);
-    glEnd();
-    glBegin(GL_QUADS);
-    glVertex2f(21, -210); glVertex2f(121 - shadow, -210);
-    glVertex2f(121 - shadow, -200); glVertex2f(21, -200);
-    glEnd();
-}
-
-void drawHill(float baseY, float amplitude, float frequency, float r, float g, float b) {
-    glColor3f(r, g, b);
-
-    int extendedPoints = hillPoints * 3;
-    float startX = -screenWidth;
-    float endX = 2 * screenWidth;
-
-    glBegin(GL_POLYGON);
-    glVertex2f(startX, 0.0f);
-    for (int i = 0; i <= extendedPoints; ++i) {
-        float t = (float)i / extendedPoints;
-        float x = startX + t * (endX - startX);
-        float y = amplitude * sinf(x * frequency);
-        glVertex2f(x, y + baseY);
-    }
-    glVertex2f(endX, 0.0f);
-    glEnd();
-}
-
-// IMPORTANT: CHANGE KEYBOARD TO WORK AS ANIMATION
-void keyboard(unsigned char key, int x, int y) {
-    switch (key) {
-    case '+':
-    case '=': camZoom += 0.5f; break;
-    case '-':
-    case '_': camZoom -= 0.5f; break;
-    case 27: exit(0); break;
-    }
-    glutPostRedisplay();
-}
-
-void specialKeys(int key, int x, int y) {
-    float moveSpeed = 5.0f;
-
-    switch (key) {
-    case GLUT_KEY_UP:    camY += moveSpeed; break;
-    case GLUT_KEY_DOWN:  camY -= moveSpeed; break;
-    case GLUT_KEY_LEFT:  camX -= moveSpeed; break;
-    case GLUT_KEY_RIGHT: camX += moveSpeed; break;
-    }
-    glutPostRedisplay();
-}
-
-float hillHeightAt(float x, float baseY, float amplitude, float frequency) {
-    return baseY + amplitude * sinf(x * frequency);
-}
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-
-    glTranslatef(screenWidth / 2.0f, 0.0f, 0.0f);
-    glScalef(camZoom, camZoom, 1.0f);
-    glTranslatef(-camX - screenWidth / 2.0f, -camY, 0.0f);
-
-    // Draw hills
-    drawHill(250.0f, 30.0f, 0.01f, 0.4f, 0.7f, 0.4f);
-    drawHill(100.0f, 80.0f, 0.005f, 0.2f, 0.6f, 0.2f);
-
-	// Variables for house position
-    float houseX = 250.0f;
-    float hillY = hillHeightAt(houseX, 250.0f, 30.0f, 0.01f) - 100.0f;
-    
-	// Draw house
-    glPushMatrix();
-    glTranslatef(houseX, hillY + 200.0f, 0.0f);
-    drawHouse();
-    glPopMatrix();
-
-    glutSwapBuffers();
-}
-
-void init() {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0, screenWidth, 0.0, screenHeight);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
-}
+// second scene variables
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize((int)screenWidth, (int)screenHeight);
     glutCreateWindow("House on The Hill");
 
-    init();
-    glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+
+    initFirst();
+
+    glutDisplayFunc(displayFirst);
+    glutKeyboardFunc(keyboardFirst);
     glutSpecialFunc(specialKeys);
-    glutMainLoop();
+    printf("Use WASD to move, Arrow Keys to look around, +/- to zoom.\n");
+
+	glutMainLoop();
+
     return 0;
 }
