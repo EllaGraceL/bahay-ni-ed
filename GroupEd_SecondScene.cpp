@@ -41,7 +41,7 @@ void renderSceneSecond(void) {
 }
 
 void displaySecond() {
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.529f, 0.808f, 0.922f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
@@ -114,6 +114,12 @@ void earthquake(int) {
 	quakeAmplitude = -quakeAmplitude * 0.95f;
     
 	glutPostRedisplay();
+
+    if (abs(quakeAmplitude) <= 0.05f) {
+        quakeAmplitude = 0.00f;
+        return;
+    }
+
 	glutTimerFunc(100, earthquake, 0);
 }
 
