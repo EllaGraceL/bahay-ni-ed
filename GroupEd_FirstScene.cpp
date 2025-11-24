@@ -389,8 +389,11 @@ void updateFade(int value) {
 
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
-        glutSpecialFunc(specialKeyboardSecond);
         glutReshapeFunc(reshape);
+
+        glutMouseFunc(mouseButtonHandler);
+        glutMotionFunc(mouseMotionHandler);
+
         reshape(800, 600);
 
         fadeSpeed = -fadeSpeed;
@@ -413,8 +416,11 @@ void keyboardFirst(unsigned char key, int x, int y) {
     case '2':
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
-        glutSpecialFunc(specialKeyboardSecond);
         glutReshapeFunc(reshape);
+
+        glutMouseFunc(mouseButtonHandler);
+        glutMotionFunc(mouseMotionHandler);
+
         reshape(800, 600);
 
         break;
@@ -483,4 +489,3 @@ void initFirst() {
 
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
 }
-
