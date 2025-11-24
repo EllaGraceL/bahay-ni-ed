@@ -3,15 +3,25 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <cmath>
+#include <iostream>
 #include "FirstScene.h"
 #include "SecondScene.h"
 using namespace std;
 
+// camera related variables
 float cameraX_pos = 0.0f, cameraY_pos = 5.0f, cameraZ_pos = 20.0f;
-float cameraX_look = 0.0f, cameraY_look = 0.0f, cameraZ_look = 0.0f;
 float angle = 0.0f;
 
+// earthquake variables
 float quakeAmplitude;
+float quakeOffset = 0.0f;
+
+// mouse related variables
+bool mouseDragging = false;
+int lastMouseX, lastMouseY;
+
+float yaw = 0.0f;
+float pitch = 0.0f;
 
 void renderSceneSecond(void) {
     const float size = 50.0f;
@@ -45,16 +55,23 @@ void displaySecond() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(cameraX_pos, cameraY_pos, cameraZ_pos,  // camera position
-        cameraX_look, cameraY_look, cameraZ_look,  // look at origin
-        0.0f, 1.0f, 0.0f); // up vector
 
-    GLfloat lightPos[] = { 10.0f, 10.0f, 10.0f, 1.0f };
+    float radYaw = yaw * M_PI / 180.0f;
+    float radPitch = pitch * M_PI / 180.0f;
+
+    float lookX = cameraX_pos + cos(radPitch) * sin(radYaw);
+    float lookY = cameraY_pos - sin(radPitch) + quakeAmplitude;
+    float lookZ = cameraZ_pos - cos(radPitch) * cos(radYaw);
+
+    gluLookAt(cameraX_pos, cameraY_pos, cameraZ_pos,
+        lookX, lookY, lookZ,
+        0.0f, 1.0f, 0.0f);
+
+    GLfloat lightPos[] = { 10, 10, 10, 1 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-	renderSceneSecond();
-
-	glutSwapBuffers();
+    renderSceneSecond();
+    glutSwapBuffers();
 }
 
 void keyboardSecond(unsigned char key, int x, int y) {
@@ -73,54 +90,89 @@ void keyboardSecond(unsigned char key, int x, int y) {
         printf("Switched to First Scene. Use WASD to move, Arrow Keys to look around, +/- to zoom.\n");
 		break;
 
-    case 'w': cameraZ_pos -= speed; cameraZ_look -= speed; break;
-    case 's': cameraZ_pos += speed; cameraZ_look += speed; break;
-    case 'a': cameraX_pos -= speed; cameraX_look -= speed; break;
-    case 'd': cameraX_pos += speed; cameraX_look += speed; break;
-    // for earthquake purposes (change to animation and make smoother)
-    case 'o': cameraY_look += 0.5f; break;
-	case 'p': cameraY_look -= 0.5f; break;
-    case 32: quakeAmplitude = 7.5f; glutTimerFunc(0, earthquake, 0); break;
+    case 'w':
+    {
+        float radYaw = yaw * M_PI / 180.0f;
+        cameraX_pos += sin(radYaw) * speed;
+        cameraZ_pos -= cos(radYaw) * speed;
+        break;
+    }
+    case 's':
+    {
+        float radYaw = yaw * M_PI / 180.0f;
+        cameraX_pos -= sin(radYaw) * speed;
+        cameraZ_pos += cos(radYaw) * speed;
+        break;
+    }
+    case 'a':
+    {
+        float radYaw = yaw * M_PI / 180.0f;
+        cameraX_pos -= cos(radYaw) * speed;
+        cameraZ_pos -= sin(radYaw) * speed;
+        break;
+    }
+    case 'd': 
+    {
+        float radYaw = yaw * M_PI / 180.0f;
+        cameraX_pos += cos(radYaw) * speed;
+        cameraZ_pos += sin(radYaw) * speed;
+        break;
+    }
+    case 32: quakeAmplitude = 0.3f; glutTimerFunc(0, earthquake, 0); break;
     case 27: exit(0);
     }
     glutPostRedisplay();
 }
 
-void specialKeyboardSecond(int key, int x, int y) {
-    const float angleStep = 5.0f;
-    switch (key) {
-    case GLUT_KEY_UP:
-        cameraY_look += 1.0f;
-        break;
-    case GLUT_KEY_DOWN:
-        cameraY_look -= 1.0f;
-        break;
-    case GLUT_KEY_LEFT:
-        angle -= angleStep;
-        cameraX_look = cameraX_pos + 20.0f * sin(angle * M_PI / 180.0f);
-        cameraZ_look = cameraZ_pos - 20.0f * cos(angle * M_PI / 180.0f);
-        break;
-    case GLUT_KEY_RIGHT:
-        angle += angleStep;
-        cameraX_look = cameraX_pos + 20.0f * sin(angle * M_PI / 180.0f);
-        cameraZ_look = cameraZ_pos - 20.0f * cos(angle * M_PI / 180.0f);
-        break;
+void mouseButtonHandler(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            mouseDragging = true;
+            lastMouseX = x;
+            lastMouseY = y;
+        }
+        else if (state == GLUT_UP) {
+            mouseDragging = false;
+        }
     }
+}
+
+void mouseMotionHandler(int x, int y) {
+    if (!mouseDragging) return;
+
+    float sensitivity = 0.15f;   
+
+    int dx = x - lastMouseX;
+    int dy = y - lastMouseY;
+
+    yaw += dx * sensitivity;
+    pitch += dy * sensitivity;
+
+    if (pitch > 89.0f) pitch = 89.0f;
+    if (pitch < -89.0f) pitch = -89.0f;
+    
+    float radYaw = yaw * M_PI / 180.0f;
+    float radPitch = pitch * M_PI / 180.0f;
+
+
+    lastMouseX = x;
+    lastMouseY = y;
+
     glutPostRedisplay();
 }
 
 void earthquake(int) {
-    cameraY_look += quakeAmplitude;
-	quakeAmplitude = -quakeAmplitude * 0.95f;
-    
-	glutPostRedisplay();
+    quakeOffset += quakeAmplitude;
+    quakeAmplitude *= -0.98f;
 
-    if (abs(quakeAmplitude) <= 0.05f) {
-        quakeAmplitude = 0.00f;
+    if (fabs(quakeAmplitude) <= 0.0005f) {
+        quakeOffset = 0;
+        quakeAmplitude = 0;
         return;
     }
 
-	glutTimerFunc(100, earthquake, 0);
+    glutPostRedisplay();
+    glutTimerFunc(32, earthquake, 0);
 }
 
 void reshape(int w, int h) {
