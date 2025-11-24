@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+﻿#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -6,6 +6,8 @@
 #include <iostream>
 #include "FirstScene.h"
 #include "SecondScene.h"
+#include "Room.h"
+#include "Objects.h"
 using namespace std;
 
 // camera related variables
@@ -23,12 +25,124 @@ int lastMouseX, lastMouseY;
 float yaw = 0.0f;
 float pitch = 0.0f;
 
+void drawBackWallWindow()
+{
+    float wallZ = -6.0f;
+
+    float epsilon = 1.0f; // small offset to avoid clipping
+    float winZ = wallZ + epsilon;
+
+    // Window size
+    float winWidth = 3.0f;
+    float winHeight = 3.0f;
+
+    // Window position (centered)
+    float cx = 0.0f;
+    float cy = 0.0f;
+
+    // Window frame thickness
+    float frame = 0.2f;
+
+    // Draw window frame - grey
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glBegin(GL_QUADS);
+    // Left frame
+    glVertex3f(cx - winWidth / 2 - frame, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx - winWidth / 2, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx - winWidth / 2, cy + winHeight / 2 + frame, wallZ);
+    glVertex3f(cx - winWidth / 2 - frame, cy + winHeight / 2 + frame, wallZ);
+
+    // Right frame
+    glVertex3f(cx + winWidth / 2, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy + winHeight / 2 + frame, wallZ);
+    glVertex3f(cx + winWidth / 2, cy + winHeight / 2 + frame, wallZ);
+
+    // Top frame
+    glVertex3f(cx - winWidth / 2 - frame, cy + winHeight / 2, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy + winHeight / 2, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy + winHeight / 2 + frame, wallZ);
+    glVertex3f(cx - winWidth / 2 - frame, cy + winHeight / 2 + frame, wallZ);
+
+    // Bottom frame
+    glVertex3f(cx - winWidth / 2 - frame, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy - winHeight / 2 - frame, wallZ);
+    glVertex3f(cx + winWidth / 2 + frame, cy - winHeight / 2, wallZ);
+    glVertex3f(cx - winWidth / 2 - frame, cy - winHeight / 2, wallZ);
+    glEnd();
+
+    // Draw window glass - light blue
+    glColor3f(0.6f, 0.8f, 1.0f);
+    glBegin(GL_QUADS);
+    glVertex3f(cx - winWidth / 2, cy - winHeight / 2, wallZ);
+    glVertex3f(cx + winWidth / 2, cy - winHeight / 2, wallZ);
+    glVertex3f(cx + winWidth / 2, cy + winHeight / 2, wallZ);
+    glVertex3f(cx - winWidth / 2, cy + winHeight / 2, wallZ);
+    glEnd();
+}
+
+void drawRightWallWindow()
+{
+    float wallX = 6.0f;
+    float epsilon = 0.05f; // offset to avoid clipping
+    float winX = wallX - epsilon;
+
+    // Window size
+    float winWidth = 3.0f;
+    float winHeight = 3.0f;
+
+    // Window position 
+    float cz = 0.0f;
+    float cy = 0.0f;
+
+    // Window frame thickness
+    float frame = 0.2f;
+
+    // Draw window frame - grey
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glBegin(GL_QUADS);
+    // Left frame 
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz - winWidth / 2 - frame);
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz - winWidth / 2);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz - winWidth / 2);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz - winWidth / 2 - frame);
+
+    // Right frame
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz + winWidth / 2);
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz + winWidth / 2);
+
+    // Top frame
+    glVertex3f(winX, cy + winHeight / 2, cz - winWidth / 2 - frame);
+    glVertex3f(winX, cy + winHeight / 2, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy + winHeight / 2 + frame, cz - winWidth / 2 - frame);
+
+    // Bottom frame
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz - winWidth / 2 - frame);
+    glVertex3f(winX, cy - winHeight / 2 - frame, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy - winHeight / 2, cz + winWidth / 2 + frame);
+    glVertex3f(winX, cy - winHeight / 2, cz - winWidth / 2 - frame);
+    glEnd();
+
+    // Draw window glass - light blue
+    glColor3f(0.6f, 0.8f, 1.0f);
+    glBegin(GL_QUADS);
+    glVertex3f(winX, cy - winHeight / 2, cz - winWidth / 2);
+    glVertex3f(winX, cy - winHeight / 2, cz + winWidth / 2);
+    glVertex3f(winX, cy + winHeight / 2, cz + winWidth / 2);
+    glVertex3f(winX, cy + winHeight / 2, cz - winWidth / 2);
+    glEnd();
+}
+
+
 void renderSceneSecond(void) {
     const float size = 50.0f;
-    const float step = 1.0f;  
+    const float step = 1.0f;
 
+    // Draw the ground and grid
     glColor3f(0.3f, 0.8f, 0.3f);
-
     glBegin(GL_QUADS);
     glNormal3f(0.0f, 1.0f, 0.0f);
     glVertex3f(-size, 0.0f, -size);
@@ -38,8 +152,6 @@ void renderSceneSecond(void) {
     glEnd();
 
     glColor3f(0.2f, 0.2f, 0.2f);
-    
-
     glBegin(GL_LINES);
     for (float i = -size; i <= size; i += step) {
         glVertex3f(i, 0, -size);
@@ -48,6 +160,24 @@ void renderSceneSecond(void) {
         glVertex3f(size, 0, i);
     }
     glEnd();
+
+    glPushMatrix();
+    glTranslatef(0.0f, 5.0f, 15.0f);
+    renderRoomVBO();
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(-1.0f, -1.0f);
+    drawBackWallWindow();
+    drawRightWallWindow();
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0f, 5.0f, 15.0f);
+    setupLights();
+    glPopMatrix();
+
+    drawChairMesh();
 }
 
 void displaySecond() {
@@ -87,8 +217,8 @@ void keyboardSecond(unsigned char key, int x, int y) {
         glutDisplayFunc(displayFirst);
         glutKeyboardFunc(keyboardFirst);
         glutSpecialFunc(specialKeys);
-        printf("Switched to First Scene. Use WASD to move, Arrow Keys to look around, +/- to zoom.\n");
-		break;
+        printf("Switched to First Scene.\n");
+        break;
 
     case 'w':
     {
@@ -111,7 +241,7 @@ void keyboardSecond(unsigned char key, int x, int y) {
         cameraZ_pos -= sin(radYaw) * speed;
         break;
     }
-    case 'd': 
+    case 'd':
     {
         float radYaw = yaw * M_PI / 180.0f;
         cameraX_pos += cos(radYaw) * speed;
@@ -140,7 +270,7 @@ void mouseButtonHandler(int button, int state, int x, int y) {
 void mouseMotionHandler(int x, int y) {
     if (!mouseDragging) return;
 
-    float sensitivity = 0.15f;   
+    float sensitivity = 0.15f;
 
     int dx = x - lastMouseX;
     int dy = y - lastMouseY;
@@ -150,7 +280,7 @@ void mouseMotionHandler(int x, int y) {
 
     if (pitch > 89.0f) pitch = 89.0f;
     if (pitch < -89.0f) pitch = -89.0f;
-    
+
     float radYaw = yaw * M_PI / 180.0f;
     float radPitch = pitch * M_PI / 180.0f;
 

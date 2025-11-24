@@ -1,8 +1,11 @@
+#include <GL/glew.h>
 #include <GL/glut.h>
 #include <cmath>
 #include <stdio.h>
 #include "FirstScene.h"
 #include "SecondScene.h"
+#include "Room.h"
+#include "Objects.h"
 
 const int hillPoints = 400;
 const float screenWidth = 800.0f;
@@ -309,7 +312,7 @@ void updateZoom(int value) {
         }
     }
 
-    if(zoomIn) {
+    if (zoomIn) {
         camZoom += 0.05f;  // zoom as long as zoomIn is true
         camX += 3.0f;      // pan at the same time if needed
 
@@ -387,6 +390,9 @@ void updateFade(int value) {
     if (fade >= 1.0f && switchingScene) {
         switchingScene = false;
 
+        initGLTEST();
+        initChairMesh();
+
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
         glutReshapeFunc(reshape);
@@ -414,6 +420,9 @@ void updateFade(int value) {
 void keyboardFirst(unsigned char key, int x, int y) {
     switch (key) {
     case '2':
+        initGLTEST();
+        initChairMesh();
+
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
         glutReshapeFunc(reshape);

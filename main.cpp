@@ -2,8 +2,8 @@
 #include <GL/glut.h>
 #include <cmath>
 #include <stdio.h>
+#include <iostream>
 #include "FirstScene.h"
-#include "SecondScene.h"
 using namespace std;
 
 // first scene variables
@@ -27,7 +27,13 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyboardFirst);
     glutSpecialFunc(specialKeys);
 
-	glutMainLoop();
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        cerr << "Error initializing GLEW: " << glewGetErrorString(err) << endl;
+        return -1;
+    }
+
+    glutMainLoop();
 
     return 0;
 }

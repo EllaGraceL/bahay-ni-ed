@@ -1,5 +1,8 @@
 #pragma once
 
+void drawBackWallWindow();
+void drawRightWallWindow();
+
 void renderSceneSecond(void);
 void keyboardSecond(unsigned char key, int x, int y);
 
