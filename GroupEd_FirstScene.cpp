@@ -392,6 +392,12 @@ void updateFade(int value) {
 
         initGLTEST();
         initChairMesh();
+        initVaseMesh();
+        initDrawerMesh();
+        initClockMesh();
+        initTVTABLEMesh();
+        initTVMesh();
+        initDoorMesh();
 
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
@@ -422,6 +428,12 @@ void keyboardFirst(unsigned char key, int x, int y) {
     case '2':
         initGLTEST();
         initChairMesh();
+        initVaseMesh();
+        initDrawerMesh();
+        initClockMesh();
+        initTVTABLEMesh();
+        initTVMesh();
+        initDoorMesh();
 
         glutDisplayFunc(displaySecond);
         glutKeyboardFunc(keyboardSecond);
