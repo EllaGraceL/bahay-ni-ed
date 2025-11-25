@@ -13,4 +13,3 @@ void earthquake(int);
 void reshape(int w, int h);
 
 void displaySecond();
-
