@@ -1,4 +1,4 @@
-﻿#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -11,7 +11,7 @@
 using namespace std;
 
 // camera related variables
-float cameraX_pos = 0.0f, cameraY_pos = 5.0f, cameraZ_pos = 20.0f;
+float cameraX_pos = 0.0f, cameraY_pos = 4.0f, cameraZ_pos = 20.0f;
 float angle = 0.0f;
 
 // earthquake variables
@@ -162,7 +162,7 @@ void renderSceneSecond(void) {
     glEnd();
 
     glPushMatrix();
-    glTranslatef(0.0f, 5.0f, 15.0f);
+    glTranslatef(0.0f, 3.5f, 15.0f);
     renderRoomVBO();
 
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -172,8 +172,14 @@ void renderSceneSecond(void) {
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPopMatrix();
 
+    glPushMatrix();
+    glTranslatef(0.0f, 5.0f, 15.0f);
+    setupLights();
+    glPopMatrix();
+
     // couch chair manipulation
     glPushMatrix();
+    glColor3f(0.502f, 0.267f, 0.122f);
     glTranslatef(4.0f, 2.0f, 15.0f);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
@@ -183,12 +189,64 @@ void renderSceneSecond(void) {
     
     // vase manipulation
     glPushMatrix();
+    glColor3f(0.157f, 0.118f, 0.459f);
     glTranslatef(5.0f, 2.0f, 10.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    glScalef(2.0f, 2.0f, 2.0f);
+    glScalef(1.5f, 1.5f, 1.5f);
     drawVaseMesh();
     glPopMatrix();
-}
+
+    // drawer
+    glPushMatrix();
+    glColor3f(0.188f, 0.671f, 0.333f);      
+    glTranslatef(3.0f, 1.0f, 10.0f);
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawDrawerMesh();
+    glPopMatrix();
+
+    // clock
+    glPushMatrix();
+    glColor3f(0.71f, 0.565f, 0.067f);
+    glTranslatef(3.0f, 4.5f, 9.3f);
+    glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawClockMesh();
+    glPopMatrix();
+
+    // tv table
+    glPushMatrix();
+    glColor3f(0.129f, 0.769f, 0.737f);  
+    glTranslatef(-4.0f, 1.0f, 14.5f);
+    glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawTVTABLEMesh();
+    glPopMatrix();
+
+    // tv 
+    glPushMatrix();     
+    glColor3f(0.208f, 0.212f, 0.188f);
+    glTranslatef(-4.0f, 2.3f, 14.5f);
+    glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawTVMesh();
+    glPopMatrix();
+
+    // door
+    glPushMatrix();
+    glColor3f(0.502f, 0.141f, 0.078f);
+    glTranslatef(0.0f, 2.7f, 20.9f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.8f, 0.8f, 0.8f);
+    drawDoorMesh();
+    glPopMatrix();
+    }
 
 void displaySecond() {
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f);
