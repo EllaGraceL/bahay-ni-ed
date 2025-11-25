@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "FirstScene.h"
-using namespace std;
+using namespace std; 
 
 // first scene variables
 const int hillPoints = 400;
