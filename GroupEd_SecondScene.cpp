@@ -172,12 +172,22 @@ void renderSceneSecond(void) {
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPopMatrix();
 
+    // couch chair manipulation
     glPushMatrix();
-    glTranslatef(0.0f, 5.0f, 15.0f);
-    setupLights();
-    glPopMatrix();
-
+    glTranslatef(4.0f, 2.0f, 15.0f);
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     drawChairMesh();
+    glPopMatrix();
+    
+    // vase manipulation
+    glPushMatrix();
+    glTranslatef(5.0f, 2.0f, 10.0f);
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(2.0f, 2.0f, 2.0f);
+    drawVaseMesh();
+    glPopMatrix();
 }
 
 void displaySecond() {
@@ -315,4 +325,5 @@ void reshape(int w, int h) {
     gluPerspective(60.0f, aspect, 1.0f, 200.0f);
 
     glMatrixMode(GL_MODELVIEW);
+
 }
