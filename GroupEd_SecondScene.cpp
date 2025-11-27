@@ -1,4 +1,4 @@
-﻿#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -195,12 +195,15 @@ void renderSceneSecond(void) {
 
     // vase manipulation
     glPushMatrix();
-    glColor3f(0.157f, 0.118f, 0.459f);
     glTranslatef(5.0f + objQuakeX, 2.0f, 10.0f - objQuakeZ);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.5f, 1.5f, 1.5f);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, vaseTexture);
     drawVaseMesh();
     glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
 
     // drawer
     glPushMatrix();
