@@ -406,7 +406,7 @@ void updateFade(int value) {
         glutMouseFunc(mouseButtonHandler);
         glutMotionFunc(mouseMotionHandler);
 
-        reshape(800, 600);
+        reshape(1920, 1080);
 
         fadeSpeed = -fadeSpeed;
     }
@@ -442,7 +442,7 @@ void keyboardFirst(unsigned char key, int x, int y) {
         glutMouseFunc(mouseButtonHandler);
         glutMotionFunc(mouseMotionHandler);
 
-        reshape(800, 600);
+        reshape(1920, 1080);
 
         break;
     case '+':

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "FirstScene.h"
-using namespace std; 
+using namespace std;
 
 // first scene variables
 const int hillPoints = 400;
@@ -16,6 +16,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize((int)screenWidth, (int)screenHeight);
     glutCreateWindow("House on The Hill");
+    glutFullScreen();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);

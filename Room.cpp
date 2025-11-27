@@ -1,6 +1,5 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "Objects.h"
 #include <cmath>
 #include <vector>
 

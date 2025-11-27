@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+﻿#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -17,6 +17,7 @@ float angle = 0.0f;
 // earthquake variables
 float quakeAmplitude;
 float quakeOffset = 0.0f;
+int objShakeFlag = 1;
 
 // mouse related variables
 bool mouseDragging = false;
@@ -141,6 +142,11 @@ void renderSceneSecond(void) {
     const float size = 50.0f;
     const float step = 1.0f;
 
+    // object displacement variables
+    float objQuakeX = objShakeFlag * quakeOffset * 0.3f * ((rand() % 200 - 100) / 100.0f);
+    float objQuakeY = objShakeFlag * quakeOffset * 0.3f * ((rand() % 200 - 100) / 100.0f);
+    float objQuakeZ = objShakeFlag * quakeOffset * 0.3f * ((rand() % 200 - 100) / 100.0f);
+
     // Draw the ground and grid
     glColor3f(0.3f, 0.8f, 0.3f);
     glBegin(GL_QUADS);
@@ -180,17 +186,17 @@ void renderSceneSecond(void) {
     // couch chair manipulation
     glPushMatrix();
     glColor3f(0.502f, 0.267f, 0.122f);
-    glTranslatef(4.0f, 2.0f, 15.0f);
+    glTranslatef(4.0f + objQuakeX, 2.0f, 15.0f + objQuakeZ);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     drawChairMesh();
     glPopMatrix();
-    
+
     // vase manipulation
     glPushMatrix();
     glColor3f(0.157f, 0.118f, 0.459f);
-    glTranslatef(5.0f, 2.0f, 10.0f);
+    glTranslatef(5.0f + objQuakeX, 2.0f, 10.0f - objQuakeZ);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.5f, 1.5f, 1.5f);
     drawVaseMesh();
@@ -198,8 +204,8 @@ void renderSceneSecond(void) {
 
     // drawer
     glPushMatrix();
-    glColor3f(0.188f, 0.671f, 0.333f);      
-    glTranslatef(3.0f, 1.0f, 10.0f);
+    glColor3f(0.188f, 0.671f, 0.333f);
+    glTranslatef(3.0f - objQuakeX, 1.0f, 10.0f + objQuakeZ);
     glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
@@ -209,7 +215,7 @@ void renderSceneSecond(void) {
     // clock
     glPushMatrix();
     glColor3f(0.71f, 0.565f, 0.067f);
-    glTranslatef(3.0f, 4.5f, 9.3f);
+    glTranslatef(3.0f + objQuakeX, 4.5f + objQuakeY, 9.3f);
     glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
@@ -218,8 +224,8 @@ void renderSceneSecond(void) {
 
     // tv table
     glPushMatrix();
-    glColor3f(0.129f, 0.769f, 0.737f);  
-    glTranslatef(-4.0f, 1.0f, 14.5f);
+    glColor3f(0.129f, 0.769f, 0.737f);
+    glTranslatef(-4.0f + objQuakeX, 1.0f, 14.5f + objQuakeZ);
     glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
@@ -227,10 +233,10 @@ void renderSceneSecond(void) {
     glPopMatrix();
 
     // tv 
-    glPushMatrix();     
+    glPushMatrix();
     glColor3f(0.208f, 0.212f, 0.188f);
-    glTranslatef(-4.0f, 2.3f, 14.5f);
-    glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
+    glTranslatef(-4.0f - objQuakeX, 2.3f, 14.5f - objQuakeZ);
+    glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawTVMesh();
@@ -246,7 +252,7 @@ void renderSceneSecond(void) {
     glScalef(0.8f, 0.8f, 0.8f);
     drawDoorMesh();
     glPopMatrix();
-    }
+}
 
 void displaySecond() {
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f);
@@ -316,7 +322,7 @@ void keyboardSecond(unsigned char key, int x, int y) {
         cameraZ_pos += sin(radYaw) * speed;
         break;
     }
-    case 32: quakeAmplitude = 0.3f; glutTimerFunc(0, earthquake, 0); break;
+    case 32: quakeAmplitude = 0.2f; glutTimerFunc(0, earthquake, 0); break;
     case 27: exit(0);
     }
     glutPostRedisplay();
@@ -363,6 +369,9 @@ void earthquake(int) {
     quakeOffset += quakeAmplitude;
     quakeAmplitude *= -0.98f;
 
+    if (fabs(quakeAmplitude) <= 0.0025f) objShakeFlag = 0;
+    else objShakeFlag = 1;
+
     if (fabs(quakeAmplitude) <= 0.0005f) {
         quakeOffset = 0;
         quakeAmplitude = 0;
@@ -383,5 +392,5 @@ void reshape(int w, int h) {
     gluPerspective(60.0f, aspect, 1.0f, 200.0f);
 
     glMatrixMode(GL_MODELVIEW);
-
+    glutFullScreen();
 }
