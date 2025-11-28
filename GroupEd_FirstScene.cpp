@@ -324,7 +324,7 @@ void drawTitleCard() {
 void updateZoom(int value) {
     if (titleFlag) {
         titleX += 3.0f;
-        textSpeed += 0.005f;
+        textSpeed += 0.015f;
         if (titleX >= 740.0f) {
             titleFlag = false;
             zoomOut = true;
@@ -382,7 +382,6 @@ void updateZoom(int value) {
     if (titleFlag || zoomOut || zoomIn || panLeft || panRight || waitFlag)
         glutTimerFunc(16, updateZoom, 0);
 }
-
 
 void animation(unsigned char key, int x, int y) {
     if (!zoomOut && !zoomIn) { // only start if not already animating
