@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <cmath>
 #include <stdio.h>
+#include <string.h>
 #include "FirstScene.h"
 #include "SecondScene.h"
 #include "Room.h"
@@ -20,6 +21,26 @@ float fade = 0.0f;
 bool fading = false;
 bool switchingScene = false;
 float fadeSpeed = 0.02f;
+
+// animation variables
+bool zoomOut = false;
+bool zoomIn = false;
+
+bool panLeft = false;
+bool panRight = false;
+
+bool waitFlag = false;
+float waitTime = 0.0f;
+
+bool titleFlag = false;
+float titleX = 140.0f; // Moves to 740.0f
+float textSpeed = 1.0f;
+
+// title card variables
+float cardTop = screenHeight * (2.0f / 3.5f);
+float cardBottom = screenHeight / 2.5f;
+float cardCenterX = screenWidth * 0.5f;
+float cardCenterY = (cardTop + cardBottom) * 0.5f;
 
 void drawDoor() {
     glBegin(GL_QUADS);
@@ -275,17 +296,41 @@ void drawHill(float baseY, float amplitude, float frequency, float r, float g, f
     glEnd();
 }
 
-// animation variables
-bool zoomOut = false;
-bool zoomIn = false;
+void renderStrokeString(float x, float y, float scale, void* font, const char* string) {
+    glPushMatrix();
+    glTranslatef(x, y, 0);
+    glScalef(scale, scale, 1.0f);
+    while (*string) {
+        glutStrokeCharacter(font, *string);
+        string++;
+    }
+    glPopMatrix();
+}
 
-bool panLeft = false;
-bool panRight = false;
+void drawTitleCard() {
+    
 
-bool waitFlag = false;
-float waitTime = 0.0f;
+    glColor4f(1.0f, 0.6f, 0.2f, 0.60f);
+
+    glBegin(GL_QUADS);
+    glVertex2f(0.0f, cardBottom);
+    glVertex2f(screenWidth, cardBottom);
+    glVertex2f(screenWidth, cardTop);
+    glVertex2f(0.0f, cardTop);
+    glEnd();
+}
+
 
 void updateZoom(int value) {
+    if (titleFlag) {
+        titleX += 3.0f;
+        textSpeed += 0.005f;
+        if (titleX >= 740.0f) {
+            titleFlag = false;
+            zoomOut = true;
+        }
+    }
+
     if (zoomOut) {
         camZoom -= 0.007f;
         if (camZoom <= 1.0f) {
@@ -334,14 +379,14 @@ void updateZoom(int value) {
 
     glutPostRedisplay();
 
-    if (zoomOut || zoomIn || panLeft || panRight || waitFlag)
+    if (titleFlag || zoomOut || zoomIn || panLeft || panRight || waitFlag)
         glutTimerFunc(16, updateZoom, 0);
 }
 
 
 void animation(unsigned char key, int x, int y) {
     if (!zoomOut && !zoomIn) { // only start if not already animating
-        zoomOut = true;
+        titleFlag = true;
         glutTimerFunc(0, updateZoom, 0);
     }
 }
@@ -422,7 +467,6 @@ void updateFade(int value) {
     glutTimerFunc(16, updateFade, 0);
 }
 
-
 void keyboardFirst(unsigned char key, int x, int y) {
     switch (key) {
     case '2':
@@ -447,9 +491,7 @@ void keyboardFirst(unsigned char key, int x, int y) {
         break;
     case '+':
     case '=': camZoom += 0.5f; break;
-    case 32:
-    case '-':
-    case '_': animation(key, x, y);
+    case 32: animation(key, x, y);
         break;
     case 27: exit(0); break;
     }
@@ -495,7 +537,22 @@ void displayFirst() {
     drawHouse();
     glPopMatrix();
 
+    // For transition
     drawFade();
+
+    // Intro Title Card
+    glPushMatrix();
+    glTranslatef(titleX, 0.0f, 0.0f);
+    drawTitleCard();
+    glPopMatrix();
+
+    glLoadIdentity();
+    glTranslatef(titleX * textSpeed, 0.0f, 0.0f);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    renderStrokeString(cardCenterX - 260, cardCenterY + 50, 0.25f, GLUT_STROKE_ROMAN, "BAHAY NI ED");
+    renderStrokeString(cardCenterX - 220, cardCenterY + 10, 0.15f, GLUT_STROKE_ROMAN, "TN38 - Group 7");
+    renderStrokeString(cardCenterX - 300, cardCenterY - 120, 0.20f, GLUT_STROKE_ROMAN, "Press Spacebar to Begin");
+
     glutSwapBuffers();
 }
 
