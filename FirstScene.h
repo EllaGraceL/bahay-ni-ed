@@ -5,6 +5,8 @@ void drawBalcony();
 void drawWindow();
 void drawHouse();
 void drawHill(float baseY, float amplitude, float frequency, float r, float g, float b);
+void renderStrokeString(float x, float y, void* font, const char* string);
+void drawTitleCard();
 
 void updateZoom(int value);
 void animation(unsigned char key, int x, int y);
