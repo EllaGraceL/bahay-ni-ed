@@ -496,19 +496,6 @@ void keyboardFirst(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
-void specialKeys(int key, int x, int y) {
-    float moveSpeed = 5.0f;
-
-    switch (key) {
-    case GLUT_KEY_UP:    camY += moveSpeed; break;
-    case GLUT_KEY_DOWN:  camY -= moveSpeed; break;
-    case GLUT_KEY_LEFT:  camX -= moveSpeed; break;
-    case GLUT_KEY_RIGHT: camX += moveSpeed; break;
-    }
-
-    glutPostRedisplay();
-}
-
 float hillHeightAt(float x, float baseY, float amplitude, float frequency) {
     return baseY + amplitude * sinf(x * frequency);
 }
@@ -565,4 +552,5 @@ void initFirst() {
 
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
 }
+
 
