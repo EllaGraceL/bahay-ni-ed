@@ -534,8 +534,9 @@ void displayFirst() {
     glLoadIdentity();
     glTranslatef(titleX * textSpeed, 0.0f, 0.0f);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    renderStrokeString(cardCenterX - 260, cardCenterY + 50, 0.25f, GLUT_STROKE_ROMAN, "BAHAY NI ED");
-    renderStrokeString(cardCenterX - 220, cardCenterY + 10, 0.15f, GLUT_STROKE_ROMAN, "TN38 - Group 7");
+    renderStrokeString(cardCenterX - 400, cardCenterY + 50, 0.25f, GLUT_STROKE_ROMAN, "BAHAY NI ED - EARTHQUAKE");
+    renderStrokeString(cardCenterX - 290, cardCenterY + 10, 0.15f, GLUT_STROKE_ROMAN, "CS0045 - TN38 - Group 7");
+    renderStrokeString(cardCenterX - 290, cardCenterY - 20, 0.05f, GLUT_STROKE_ROMAN, "EDUARDO - 202310279; JEFFREY - 202312032; ELLA - 202311727; LUIS - 202311133");
     renderStrokeString(cardCenterX - 300, cardCenterY - 120, 0.20f, GLUT_STROKE_ROMAN, "Press Spacebar to Begin");
 
     glutSwapBuffers();
@@ -552,5 +553,3 @@ void initFirst() {
 
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
 }
-
-
