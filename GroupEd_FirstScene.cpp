@@ -489,8 +489,6 @@ void keyboardFirst(unsigned char key, int x, int y) {
         reshape(1920, 1080);
 
         break;
-    case '+':
-    case '=': camZoom += 0.5f; break;
     case 32: animation(key, x, y);
         break;
     case 27: exit(0); break;
@@ -567,3 +565,4 @@ void initFirst() {
 
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
 }
+
