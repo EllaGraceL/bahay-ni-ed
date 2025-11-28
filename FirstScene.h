@@ -19,5 +19,3 @@ float hillHeightAt(float x, float baseY, float amplitude, float frequency);
 
 void displayFirst();
 void initFirst();
-
-
