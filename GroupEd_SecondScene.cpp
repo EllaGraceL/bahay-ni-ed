@@ -1,4 +1,4 @@
-﻿#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -290,8 +290,6 @@ void keyboardSecond(unsigned char key, int x, int y) {
 
         glutDisplayFunc(displayFirst);
         glutKeyboardFunc(keyboardFirst);
-        glutSpecialFunc(specialKeys);
-        printf("Switched to First Scene.\n");
         break;
 
     case 'w':
