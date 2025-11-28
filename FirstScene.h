@@ -14,10 +14,10 @@ void drawFade();
 void updateFade(int value);
 
 void keyboardFirst(unsigned char key, int x, int y);
-void specialKeys(int key, int x, int y);
 
 float hillHeightAt(float x, float baseY, float amplitude, float frequency);
 
 void displayFirst();
 void initFirst();
+
 
