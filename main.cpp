@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(displayFirst);
     glutKeyboardFunc(keyboardFirst);
-    glutSpecialFunc(specialKeys);
 
     GLenum err = glewInit();
     if (err != GLEW_OK) {
