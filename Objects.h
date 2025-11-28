@@ -14,6 +14,3 @@ void initTVMesh();
 void drawTVMesh();
 void initDoorMesh();
 void drawDoorMesh();
-
-void initVaseTexture();
-extern GLuint vaseTexture;
