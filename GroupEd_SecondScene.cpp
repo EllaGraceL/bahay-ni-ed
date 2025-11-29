@@ -185,73 +185,82 @@ void renderSceneSecond(void) {
 
     // couch chair manipulation
     glPushMatrix();
-    glColor3f(0.502f, 0.267f, 0.122f);
     glTranslatef(4.0f + objQuakeX, 2.0f, 15.0f + objQuakeZ);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, chairTexture);
     drawChairMesh();
     glPopMatrix();
-
+    
     // vase manipulation
     glPushMatrix();
-    glColor3f(0.157f, 0.118f, 0.459f);
     glTranslatef(5.0f + objQuakeX, 2.0f, 10.0f - objQuakeZ);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
     glScalef(1.5f, 1.5f, 1.5f);
+    glBindTexture(GL_TEXTURE_2D, vaseTexture);
     drawVaseMesh();
     glPopMatrix();
-
+    
     // drawer
     glPushMatrix();
-    glColor3f(0.188f, 0.671f, 0.333f);
-    glTranslatef(3.0f - objQuakeX, 1.0f, 10.0f + objQuakeZ);
+    glTranslatef(3.0f - objQuakeX, 1.5f, 10.0f + objQuakeZ);
     glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, drawerTexture);
     drawDrawerMesh();
     glPopMatrix();
-
+    
     // clock
     glPushMatrix();
-    glColor3f(0.71f, 0.565f, 0.067f);
     glTranslatef(3.0f + objQuakeX, 4.5f + objQuakeY, 9.3f);
     glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, clockTexture);
     drawClockMesh();
     glPopMatrix();
-
+    
     // tv table
     glPushMatrix();
-    glColor3f(0.129f, 0.769f, 0.737f);
-    glTranslatef(-4.0f + objQuakeX, 1.0f, 14.5f + objQuakeZ);
+    glTranslatef(-4.0f + objQuakeX, 1.5f, 14.5f + objQuakeZ);
     glRotatef(270.0f, 0.0f, 2.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, tvTableTexture);
     drawTVTABLEMesh();
     glPopMatrix();
-
+    
     // tv 
     glPushMatrix();
-    glColor3f(0.208f, 0.212f, 0.188f);
-    glTranslatef(-4.0f - objQuakeX, 2.3f, 14.5f - objQuakeZ);
+    glTranslatef(-4.0f - objQuakeX, 3.15f, 14.5f - objQuakeZ);
     glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     glScalef(1.0f, 1.0f, 1.0f);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, tvTexture);
     drawTVMesh();
     glPopMatrix();
-
+    
     // door
     glPushMatrix();
-    glColor3f(0.502f, 0.141f, 0.078f);
     glTranslatef(0.0f, 2.7f, 20.9f);
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
     glScalef(0.8f, 0.8f, 0.8f);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, doorTexture);
     drawDoorMesh();
     glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
 }
 
 void displaySecond() {
@@ -392,3 +401,4 @@ void reshape(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
     glutFullScreen();
 }
+
