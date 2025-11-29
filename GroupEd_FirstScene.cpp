@@ -435,12 +435,20 @@ void updateFade(int value) {
         switchingScene = false;
 
         initGLTEST();
+        initChairTexture();
         initChairMesh();
+        initVaseTexture();
         initVaseMesh();
+        initDrawerTexture();
         initDrawerMesh();
+        initClockTexture();
+        initClockTexture();
         initClockMesh();
+        initTVTableTexture();
         initTVTABLEMesh();
+        initTVTexture();
         initTVMesh();
+        initDoorTexture();
         initDoorMesh();
 
         glutDisplayFunc(displaySecond);
@@ -552,3 +560,4 @@ void initFirst() {
 
     glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // sky blue
 }
+
